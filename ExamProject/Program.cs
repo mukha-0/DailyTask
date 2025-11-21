@@ -26,6 +26,14 @@ builder.Services.AddDbContext<AppDbContext>(options =>
            .LogTo(Console.WriteLine, Microsoft.Extensions.Logging.LogLevel.Information)
 );
 
+Log.Logger = new LoggerConfiguration()
+    .MinimumLevel.Information()
+    .WriteTo.Console()
+    .WriteTo.File("Logs/dailytask-.log", rollingInterval: RollingInterval.Day)
+    .WriteTo.Seq("http://localhost:5341")
+    .CreateLogger();
+
+
 builder.Services.AddScoped<IUnitOfWork, UnitOfWork>();
 
 builder.Services.AddScoped(typeof(IRepository<>), typeof(Repository<>));
