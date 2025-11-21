@@ -1,0 +1,90 @@
+﻿@model DailyTask.Service.Services.DailyTask.Models.DailyTaskGetModel
+
+@{
+    ViewData["Title"] = "Task Details";
+}
+
+<style>
+    body {
+        background-color: #e0f7fa;
+        font-family: Arial, sans-serif;
+    }
+
+    .container {
+        max-width: 600px;
+        margin: 50px auto;
+        background-color: #ffffff;
+        padding: 25px;
+        border-radius: 10px;
+        box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+    }
+
+    h2 {
+        text-align: center;
+        margin-bottom: 20px;
+    }
+
+    p {
+        margin: 10px 0;
+        font-size: 16px;
+    }
+
+    .btn-group {
+        display: flex;
+        justify-content: center;
+        margin-top: 20px;
+    }
+
+    button, a.btn-link {
+        background-color: #0288d1;
+        color: white;
+        padding: 10px 20px;
+        border: none;
+        border-radius: 5px;
+        cursor: pointer;
+        margin: 0 10px;
+        text-decoration: none;
+    }
+
+        button:hover, a.btn-link:hover {
+            background-color: #01579b;
+        }
+
+    .btn-delete {
+        background-color: #d32f2f;
+    }
+
+        .btn-delete:hover {
+            background-color: #9a0007;
+        }
+
+    .btn-status {
+        background-color: #fbc02d;
+        color: black;
+    }
+
+        .btn-status:hover {
+            background-color: #f57f17;
+        }
+</style>
+
+<div class="container">
+    <h2>Task Details</h2>
+
+    <p><strong>ID:</strong> @Model.Id</p>
+    <p><strong>Name:</strong> @Model.Name</p>
+    <p><strong>Description:</strong> @Model.Description</p>
+    <p><strong>Status:</strong> @Model.Status</p>
+    <p><strong>Start Time:</strong> @Model.StartTime.ToString("yyyy-MM-dd HH:mm")</p>
+    <p><strong>End Time:</strong> @Model.EndTime.ToString("yyyy-MM-dd HH:mm")</p>
+
+    <div class="btn-group">
+        <a asp-action="Update" asp-route-id="@Model.Id" class="btn-link">Update</a>
+        <a asp-action="UpdateStatus" asp-route-id="@Model.Id" class="btn-status">Change Status</a>
+        <a asp-action="Delete" asp-route-id="@Model.Id" class="btn-delete">Delete</a>
+    </div>
+
+    <div style="text-align:center; margin-top:15px;">
+        <a asp-action="Index" class="btn-link">Back to List</a>
+    </div>
+</div>

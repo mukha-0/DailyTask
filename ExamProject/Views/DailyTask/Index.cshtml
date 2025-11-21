@@ -1,0 +1,186 @@
+﻿@model IEnumerable<DailyTask.Service.Services.DailyTask.Models.DailyTaskGetModel>
+
+@{
+    ViewData["Title"] = "Daily Tasks";
+}
+
+<style>
+    body {
+        background-color: #e0f7fa;
+        font-family: Arial, sans-serif;
+    }
+
+    .container {
+        max-width: 900px;
+        margin: 50px auto;
+        padding: 20px;
+        background-color: #ffffff;
+        border-radius: 10px;
+        box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+    }
+
+    h2 {
+        text-align: center;
+        margin-bottom: 20px;
+    }
+
+    .top-bar {
+        display: flex;
+        justify-content: space-between;
+        margin-bottom: 20px;
+        flex-wrap: wrap;
+        gap: 10px;
+    }
+
+        .top-bar input {
+            padding: 8px;
+            border-radius: 5px;
+            border: 1px solid #ccc;
+            width: 200px;
+        }
+
+        .top-bar button {
+            background-color: #0288d1;
+            color: white;
+            padding: 8px 15px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+
+            .top-bar button:hover {
+                background-color: #01579b;
+            }
+
+    table {
+        width: 100%;
+        border-collapse: collapse;
+    }
+
+        table th, table td {
+            padding: 12px 10px;
+            text-align: left;
+            border-bottom: 1px solid #ddd;
+        }
+
+        table tr:hover {
+            background-color: #f1f1f1;
+            cursor: pointer;
+        }
+
+    .task-details {
+        margin-top: 30px;
+        padding: 20px;
+        border-radius: 10px;
+        background-color: #f0f4f7;
+        box-shadow: 0 2px 5px rgba(0,0,0,0.05);
+    }
+
+    .btn-group button {
+        margin-right: 10px;
+        padding: 8px 12px;
+        border-radius: 5px;
+        border: none;
+        color: white;
+        cursor: pointer;
+    }
+
+    .btn-update {
+        background-color: #0288d1;
+    }
+
+    .btn-status {
+        background-color: #7b1fa2;
+    }
+
+    .btn-delete {
+        background-color: #d32f2f;
+    }
+
+    .btn-update:hover {
+        background-color: #01579b;
+    }
+
+    .btn-status:hover {
+        background-color: #4a0072;
+    }
+
+    .btn-delete:hover {
+        background-color: #9a0007;
+    }
+</style>
+
+<div class="container">
+    <h2>Daily Tasks</h2>
+
+    <div class="top-bar">
+        <input type="number" id="searchId" placeholder="Search by Id..." />
+        <input type="text" id="searchName" placeholder="Search by Name..." />
+        <button onclick="location.href='@Url.Action("Create")'">Add New Task</button>
+    </div>
+
+    <table id="tasksTable">
+        <thead>
+            <tr>
+                <th>Id</th>
+                <th>Name</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var task in Model)
+            {
+                <tr data-id="@task.Id" data-name="@task.Name">
+                    <td>@task.Id</td>
+                    <td>@task.Name</td>
+                </tr>
+            }
+        </tbody>
+    </table>
+
+    <div id="taskDetails" class="task-details" style="display:none;"></div>
+</div>
+
+<script>
+    const tasks = @Html.Raw(Newtonsoft.Json.JsonConvert.SerializeObject(Model));
+
+    const table = document.getElementById('tasksTable');
+    const detailsDiv = document.getElementById('taskDetails');
+
+    table.querySelectorAll('tbody tr').forEach(row => {
+        row.addEventListener('click', () => {
+            const id = row.dataset.id;
+            const task = tasks.find(t => t.Id == id);
+
+            detailsDiv.style.display = 'block';
+            detailsDiv.innerHTML = `
+                <h3>Task Details (Id: ${task.Id})</h3>
+                <p><strong>Name:</strong> ${task.Name}</p>
+                <p><strong>Description:</strong> ${task.Description}</p>
+                <p><strong>Status:</strong> ${task.Status}</p>
+                <p><strong>Start Time:</strong> ${new Date(task.StartTime).toLocaleString()}</p>
+                <p><strong>End Time:</strong> ${new Date(task.EndTime).toLocaleString()}</p>
+                <div class="btn-group">
+                    <button class="btn-update" onclick="location.href='@Url.Action("Update", "DailyTask")/${task.Id}'">Update</button>
+                    <button class="btn-status" onclick="location.href='@Url.Action("UpdateStatus", "DailyTask")/${task.Id}'">Change Status</button>
+                    <button class="btn-delete" onclick="location.href='@Url.Action("Delete", "DailyTask")/${task.Id}'">Delete</button>
+                </div>
+            `;
+        });
+    });
+
+    // Search by Id
+    document.getElementById('searchId').addEventListener('input', function() {
+        const val = this.value;
+        table.querySelectorAll('tbody tr').forEach(row => {
+            row.style.display = val && row.dataset.id != val ? 'none' : '';
+        });
+    });
+
+    // Live search by Name
+    document.getElementById('searchName').addEventListener('input', function() {
+        const val = this.value.toLowerCase();
+        table.querySelectorAll('tbody tr').forEach(row => {
+            row.style.display = !val || row.dataset.name.toLowerCase().includes(val) ? '' : 'none';
+        });
+    });
+</script>

@@ -1,0 +1,85 @@
+﻿@using DailyTask.Domain.Enums
+@model DailyTask.Service.Services.DailyTask.Models.DailyTaskCreateModel
+
+@{
+    ViewData["Title"] = "Create Task";
+}
+
+<style>
+    body {
+        background-color: #e0f7fa; /* light blue */
+        font-family: Arial, sans-serif;
+    }
+
+    .container {
+        max-width: 600px;
+        margin: 50px auto;
+        background-color: #ffffff;
+        padding: 25px;
+        border-radius: 10px;
+        box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+    }
+
+    h2 {
+        text-align: center;
+        margin-bottom: 20px;
+    }
+
+    label {
+        font-weight: bold;
+    }
+
+    input, select, textarea {
+        width: 100%;
+        padding: 8px 12px;
+        margin: 6px 0 15px 0;
+        border: 1px solid #ccc;
+        border-radius: 5px;
+        box-sizing: border-box;
+    }
+
+    button {
+        background-color: #00796b;
+        color: white;
+        padding: 10px 20px;
+        border: none;
+        border-radius: 5px;
+        cursor: pointer;
+        margin-right: 10px;
+    }
+
+        button:hover {
+            background-color: #004d40;
+        }
+
+    .btn-group {
+        display: flex;
+        justify-content: flex-end;
+    }
+</style>
+
+<div class="container">
+    <h2>Create New Task</h2>
+
+    <form asp-action="Create" method="post">
+        <label asp-for="Name">Name</label>
+        <input asp-for="Name" placeholder="Task name" />
+
+        <label asp-for="Description">Description</label>
+        <textarea asp-for="Description" rows="3" placeholder="Task description"></textarea>
+
+        <label asp-for="StartTime">Start Time</label>
+        <input asp-for="StartTime" type="datetime-local" />
+
+        <label asp-for="EndTime">End Time</label>
+        <input asp-for="EndTime" type="datetime-local" />
+
+        <label asp-for="Status">Status</label>
+        <select asp-for="Status" asp-items="Html.GetEnumSelectList<TaskStatuss>()"></select>
+
+        <div class="btn-group">
+            <button type="submit">Create</button>
+            <a asp-action="Index"><button type="button">Cancel</button></a>
+        </div>
+    </form>
+</div>

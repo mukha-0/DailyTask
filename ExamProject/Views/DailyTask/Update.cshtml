@@ -1,0 +1,117 @@
+﻿@model DailyTask.Service.Services.DailyTask.Models.DailyTaskUpdateModel
+
+@{
+    ViewData["Title"] = "Update Task";
+}
+
+<style>
+    body {
+        background-color: #e0f7fa;
+        font-family: Arial, sans-serif;
+    }
+
+    .container {
+        max-width: 600px;
+        margin: 50px auto;
+        padding: 25px;
+        background-color: #ffffff;
+        border-radius: 10px;
+        box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+    }
+
+    h2 {
+        text-align: center;
+        margin-bottom: 25px;
+    }
+
+    .form-group {
+        margin-bottom: 15px;
+    }
+
+        .form-group label {
+            display: block;
+            font-weight: bold;
+            margin-bottom: 5px;
+        }
+
+        .form-group input, .form-group textarea, .form-group select {
+            width: 100%;
+            padding: 8px 10px;
+            border-radius: 5px;
+            border: 1px solid #ccc;
+        }
+
+    .btn-group {
+        display: flex;
+        justify-content: flex-end;
+        gap: 10px;
+        margin-top: 20px;
+    }
+
+    .btn-save {
+        background-color: #0288d1;
+        color: white;
+        border: none;
+        padding: 8px 15px;
+        border-radius: 5px;
+        cursor: pointer;
+    }
+
+        .btn-save:hover {
+            background-color: #01579b;
+        }
+
+    .btn-cancel {
+        background-color: #d32f2f;
+        color: white;
+        border: none;
+        padding: 8px 15px;
+        border-radius: 5px;
+        cursor: pointer;
+    }
+
+        .btn-cancel:hover {
+            background-color: #9a0007;
+        }
+</style>
+
+<div class="container">
+    <h2>Update Task - Id: @Model.Id</h2>
+
+    <form asp-action="Update" method="post">
+        <input type="hidden" asp-for="Id" />
+
+        <div class="form-group">
+            <label asp-for="Name"></label>
+            <input asp-for="Name" />
+            <span asp-validation-for="Name" class="text-danger"></span>
+        </div>
+
+        <div class="form-group">
+            <label asp-for="Description"></label>
+            <textarea asp-for="Description" rows="4"></textarea>
+            <span asp-validation-for="Description" class="text-danger"></span>
+        </div>
+
+        <div class="form-group">
+            <label asp-for="StartTime"></label>
+            <input type="datetime-local" asp-for="StartTime" />
+            <span asp-validation-for="StartTime" class="text-danger"></span>
+        </div>
+
+        <div class="form-group">
+            <label asp-for="EndTime"></label>
+            <input type="datetime-local" asp-for="EndTime" />
+            <span asp-validation-for="EndTime" class="text-danger"></span>
+        </div>
+
+        <div class="btn-group">
+            <button type="submit" class="btn-save">Save Changes</button>
+            <a asp-action="Index" class="btn-cancel">Cancel</a>
+        </div>
+    </form>
+</div>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}
