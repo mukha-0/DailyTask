@@ -20,6 +20,7 @@ builder.Host.UseSerilog((context, services, configuration) =>
                  .Enrich.FromLogContext();
 });
 
+
 builder.Services.AddDbContext<AppDbContext>(options =>
     options.UseNpgsql(builder.Configuration.GetConnectionString("PostgresSQLConnection"))
            .EnableSensitiveDataLogging()
@@ -28,11 +29,16 @@ builder.Services.AddDbContext<AppDbContext>(options =>
 
 Log.Logger = new LoggerConfiguration()
     .MinimumLevel.Information()
+    .Enrich.FromLogContext()
     .WriteTo.Console()
     .WriteTo.File("Logs/dailytask-.log", rollingInterval: RollingInterval.Day)
     .WriteTo.Seq("http://localhost:5341")
     .CreateLogger();
 
+Log.Information("Daily Task application started successfully!");
+Log.Warning("SEQ TEST WARNING — If you see this in Seq, everything works.");
+    
+builder.Host.UseSerilog();
 
 builder.Services.AddScoped<IUnitOfWork, UnitOfWork>();
 
@@ -63,6 +69,8 @@ else
 {
     app.UseExceptionHandler("/Home/Error");
 }
+
+app.UseHttpsRedirection();
 
 app.UseMiddleware<ExceptionMiddleware>();
 

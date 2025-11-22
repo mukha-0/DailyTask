@@ -226,6 +226,12 @@ namespace ExamProject.Controllers
                 return RedirectToAction(nameof(Index));
             }
         }
+        public IActionResult Test()
+        {
+            _logger.LogInformation("SEQ TEST → LogTest endpoint hit at: {time}", DateTime.Now);
+            return Ok("Logged");
+        }
+
 
     }
 
