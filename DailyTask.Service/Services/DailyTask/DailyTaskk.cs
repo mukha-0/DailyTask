@@ -2,6 +2,7 @@
 using DailyTask.DataAccess.UnitOfWork;
 using DailyTask.Domain;
 using DailyTask.Domain.Enums;
+using DailyTask.Service.Exceptions;
 using DailyTask.Service.Services.DailyTask;
 using DailyTask.Service.Services.DailyTask.Models;
 using FluentValidation;
@@ -20,9 +21,10 @@ namespace DailyTask.Service
             var task = await unitOfWork.DailyTasks.SelectAllAsQueryable()
                 .Where(x => x.IsDeleted == false)
                 .FirstOrDefaultAsync(t => t.Id == id);
+
             if (task == null)
             {
-                throw new KeyNotFoundException($"Task with id {id} not found.");
+                throw new NotFoundException($"Task with id {id} not found.");
             }
             task.Status = status;
             unitOfWork.DailyTasks.Update(task);
@@ -34,7 +36,7 @@ namespace DailyTask.Service
             var validationResult = await taskCreateValidator.ValidateAsync(task);
             if (!validationResult.IsValid)
             {
-                throw new ValidationException(validationResult.Errors);
+                throw new ArgumentIsNotValidException("Argument not valid");
             }
             var newTask = new Domain.Entities.DailyTask
             {
@@ -42,10 +44,7 @@ namespace DailyTask.Service
                 Description = task.Description,
                 Status = task.Status,
                 StartTime = task.StartTime,    
-                EndTime = task.EndTime,          
-                CreatedAt = DateTime.UtcNow,
-                UpdatedAt = DateTime.UtcNow,
-                DeletedAt = DateTime.MinValue,   
+                EndTime = task.EndTime,
                 IsDeleted = false
             };
             unitOfWork.DailyTasks.Insert(newTask);
@@ -59,9 +58,10 @@ namespace DailyTask.Service
                 .FirstOrDefaultAsync(t => t.Id == id);
             if (task == null)
             {
-                throw new KeyNotFoundException($"Task with id {id} not found.");
+                throw new NotFoundException("Task not found.");
             }
-            task.IsDeleted = true;
+
+            unitOfWork.DailyTasks.MarkAsDeleted(task);
             unitOfWork.DailyTasks.Update(task);
             await unitOfWork.SaveAsync();
         }
@@ -101,9 +101,20 @@ namespace DailyTask.Service
 
         public async Task<bool> UpdateAsync(int id,DailyTaskUpdateModel model)
         {
+            var validationResult = await taskUpdateValidator.ValidateAsync(model);
+
+            if (!validationResult.IsValid)
+            {
+                throw new ArgumentIsNotValidException("Argument not valid");
+            }
             var task = unitOfWork.DailyTasks.SelectAllAsQueryable()
                 .Where(x => x.IsDeleted == false)
                 .FirstOrDefault(t => t.Id == id);
+
+            if (task == null)
+            {
+                throw new NotFoundException("Task not found.");
+            }
 
             if (task == null) return false;
             task.Name = model.Name;

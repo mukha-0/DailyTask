@@ -12,8 +12,6 @@ namespace DailyTask.Service.Validators.DailyTask
     {
         public DailyTaskCreateModelValidator()
         {
-            RuleFor(x => x.Id)
-                .GreaterThanOrEqualTo(0);
             RuleFor(x => x.Name)
                 .NotEmpty().WithMessage("Name is required.")
                 .MaximumLength(100).WithMessage("Name cannot exceed 100 characters.");

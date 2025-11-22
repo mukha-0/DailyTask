@@ -4,7 +4,6 @@ using DailyTask.Service.Services.DailyTask.Models;
 using DailyTask.Domain.Enums;
 using DailyTask.DataAccess.UnitOfWork;
 using Microsoft.EntityFrameworkCore;
-using ExamProject.Extensions;
 using System.Threading.Tasks;
 
 namespace ExamProject.Controllers
@@ -78,9 +77,6 @@ namespace ExamProject.Controllers
                     Status = TaskStatuss.Pending,
                     StartTime = DateTime.SpecifyKind(model.StartTime, DateTimeKind.Utc),
                     EndTime = DateTime.SpecifyKind(model.EndTime, DateTimeKind.Utc),
-                    CreatedAt = DateTime.UtcNow,
-                    UpdatedAt = DateTime.UtcNow,
-                    DeletedAt = DateTime.UtcNow,
                     IsDeleted = false
                 };
 
@@ -131,7 +127,7 @@ namespace ExamProject.Controllers
                 task.Description = model.Description;
                 task.StartTime = DateTime.SpecifyKind(model.StartTime, DateTimeKind.Utc);
                 task.EndTime = DateTime.SpecifyKind(model.EndTime, DateTimeKind.Utc);
-
+                task.UpdatedAt = DateTime.UtcNow;
 
                 await _unitOfWork.SaveAsync();
 
@@ -203,7 +199,7 @@ namespace ExamProject.Controllers
                 Description = task.Description,
                 Status = task.Status,
                 StartTime = task.StartTime,
-                EndTime = task.EndTime
+                EndTime = task.EndTime,
             };
 
             return View(model);
